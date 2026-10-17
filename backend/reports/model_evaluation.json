@@ -1,0 +1,64 @@
+{
+  "model": "ExtraTreesRegressor with log-transformed target",
+  "created_at_utc": "2026-10-17T18:56:51.878298+00:00",
+  "dataset": {
+    "source": "quikr_car.csv",
+    "original_rows": 892,
+    "clean_rows": 815,
+    "excluded_rows": 77
+  },
+  "settings": {
+    "test_size": 0.2,
+    "random_state": 42,
+    "split_strategy": "GroupShuffleSplit by identical vehicle features",
+    "n_estimators": 500,
+    "min_samples_leaf": 2,
+    "max_features": 0.9,
+    "target_transform": "log1p; predictions are inverse-transformed with expm1",
+    "features": [
+      "name",
+      "company",
+      "year",
+      "car_age",
+      "kms_driven",
+      "fuel_type"
+    ],
+    "categorical_features": [
+      "name",
+      "company",
+      "fuel_type"
+    ],
+    "numeric_features": [
+      "year",
+      "car_age",
+      "kms_driven"
+    ],
+    "unknown_category_handling": "ignore unseen one-hot encoded categories",
+    "data_validation": {
+      "model_year": [
+        1990,
+        2026
+      ],
+      "kilometres_driven": [
+        0,
+        1000000
+      ],
+      "price_inr": [
+        1,
+        5000000
+      ]
+    },
+    "baseline_improvement_score_formula": "clamp(100 * (baseline_mae - model_mae) / baseline_mae, 0, 100)"
+  },
+  "metrics": {
+    "train_rows": 655,
+    "test_rows": 160,
+    "mae": 134182.5741368982,
+    "rmse": 251367.78439837985,
+    "r2": 0.41725597799753233,
+    "median_absolute_percentage_error": 24.79706808526242,
+    "baseline_mae": 210709.3,
+    "baseline_improvement_score": 36.318627541879636
+  },
+  "score_explanation": "Baseline improvement score is the percentage reduction in held-out MAE relative to predicting the training-set median price. It is not the percentage of predictions that are correct."
+}
