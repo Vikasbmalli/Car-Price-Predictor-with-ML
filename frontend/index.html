@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0b1020">
+    <meta name="description" content="Estimate used car prices with a machine learning model.">
+
+    <title>AutoValue | Car Price Predictor</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <header class="navbar">
+        <a class="logo" href="#home">
+            <span class="logo-icon">A</span>
+            AutoValue<span class="logo-dot">.</span>
+        </a>
+
+        <nav>
+            <a href="#home">Home</a>
+            <a href="#predictor">Predict Price</a>
+            <a href="#analysis">Analysis</a>
+            <a href="#how-it-works">How It Works</a>
+        </nav>
+
+        <a class="nav-button" href="#predictor">Get Estimate ↗</a>
+    </header>
+
+    <main>
+        <section class="hero" id="home">
+            <div class="hero-copy">
+                <span class="eyebrow">SMARTER CAR VALUATION</span>
+
+                <h1>Your Car.<br>
+                    <span>Its Real Worth.</span>
+                </h1>
+
+                <p>
+                    Discover an estimated resale price in seconds.
+                    Enter a few details and let machine learning
+                    help you make a smarter decision.
+                </p>
+
+                <a href="#predictor" class="primary-button">
+                    Predict My Car Price <span>→</span>
+                </a>
+
+                <div class="hero-points">
+                    <span>✓ Simple to use</span>
+                    <span>✓ Machine learning</span>
+                    <span>✓ Price in INR</span>
+                </div>
+            </div>
+
+            <div class="hero-visual">
+                <div class="hero-glow"></div>
+
+                <img
+                    class="hero-car"
+                    src="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1200&q=85"
+                    alt="Modern car"
+                >
+
+                <div class="floating-card">
+                    <span class="floating-icon">↗</span>
+                    <div>
+                        <small>Smart valuation</small>
+                        <strong>Know before you sell.</strong>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="stats">
+            <div>
+                <strong>AI / ML</strong>
+                <span>Data-driven estimates</span>
+            </div>
+            <div>
+                <strong>Fast</strong>
+                <span>Simple prediction process</span>
+            </div>
+            <div>
+                <strong>₹ INR</strong>
+                <span>Indian price estimates</span>
+            </div>
+        </section>
+
+        <section class="predict-section" id="predictor">
+            <div class="section-heading">
+                <span class="eyebrow">CAR PRICE ESTIMATOR</span>
+                <h2>Find Your Car's Value</h2>
+                <p>Enter the vehicle details to generate an estimated price.</p>
+            </div>
+
+            <div class="predict-layout">
+                <form id="predict-form" class="form-card">
+                    <div class="form-title">
+                        <div>
+                            <h3>Vehicle Details</h3>
+                            <p>Complete all the fields below.</p>
+                        </div>
+                        <span class="step-label">01 / DETAILS</span>
+                    </div>
+
+                    <div class="form-grid">
+                        <label class="field full-width">
+                            Car Model
+                            <select id="name" name="name" required disabled>
+                                <option value="">Loading car models...</option>
+                            </select>
+                        </label>
+
+                        <label class="field">
+                            Manufacturer
+                            <select id="company" name="company" required disabled>
+                                <option value="">Loading brands...</option>
+                            </select>
+                        </label>
+
+                        <label class="field">
+                            Manufacturing Year
+                            <select id="year" name="year" required disabled>
+                                <option value="">Select year</option>
+                            </select>
+                        </label>
+
+                        <label class="field">
+                            Fuel Type
+                            <select id="fuel_type" name="fuel_type" required disabled>
+                                <option value="">Select fuel type</option>
+                            </select>
+                        </label>
+
+                        <label class="field">
+                            Kilometres Driven
+                            <div class="input-wrap">
+                                <input
+                                    id="kms_driven"
+                                    name="kms_driven"
+                                    type="number"
+                                    min="0"
+                                    max="1000000"
+                                    step="1"
+                                    placeholder="e.g. 45000"
+                                    required
+                                >
+                                <span>KM</span>
+                            </div>
+                        </label>
+                    </div>
+
+                    <div id="form-error" class="message error" role="alert" hidden></div>
+                    <div id="form-success" class="message success" role="status" hidden></div>
+
+                    <button id="predict-button"
+                            type="submit"
+                            class="primary-button submit-button"
+                            disabled>
+                        Loading Dataset...
+                    </button>
+
+                    <p class="privacy-note">
+                        The estimate is generated by your machine learning backend.
+                    </p>
+                </form>
+
+                <aside class="result-card" aria-live="polite">
+                    <div class="result-header">
+                        <span class="rupee-icon">₹</span>
+                        <span class="result-label">YOUR ESTIMATE</span>
+                    </div>
+
+                    <div id="result-progress" class="result-progress" hidden>
+                        <h3>Analyzing your car...</h3>
+                        <p id="progress-status">Preparing vehicle details</p>
+                        <div id="prediction-progress-bar"
+                             class="prediction-progress-track"
+                             role="progressbar"
+                             aria-label="Prediction analysis progress"
+                             aria-valuemin="0"
+                             aria-valuemax="100"
+                             aria-valuenow="0">
+                            <span id="prediction-progress-fill"></span>
+                        </div>
+                        <strong id="prediction-progress-value">0%</strong>
+                    </div>
+
+                    <div id="result-empty">
+                        <h3>Your result<br>starts here.</h3>
+                        <p>
+                            Fill in the car details and select
+                            Estimate Car Price to see the result.
+                        </p>
+
+                        <div class="placeholder-price">
+                            <span>₹</span>
+                            <span>— — —</span>
+                        </div>
+                    </div>
+
+                    <div id="result-filled" hidden>
+                        <p class="result-caption">PREDICTED RESALE PRICE</p>
+
+                        <h2 id="result-price">₹0</h2>
+
+                        <div class="range-box">
+                            <span>Indicative price range</span>
+                            <div class="range-values">
+                                <strong id="range-low">₹0</strong>
+                                <span>to</span>
+                                <strong id="range-high">₹0</strong>
+                            </div>
+                        </div>
+
+                        <p id="result-note" class="result-note"></p>
+
+                        <button id="reset-button"
+                                type="button"
+                                class="secondary-button">
+                            Try Another Car ↻
+                        </button>
+                    </div>
+
+                    <details class="history-details">
+                        <summary>
+                            <span>View previous records</span>
+                            <span id="history-count" class="history-count">0</span>
+                        </summary>
+                        <p id="history-message" class="history-message" role="status">
+                            Your estimates will appear here.
+                        </p>
+                        <div id="prediction-history" class="prediction-history"></div>
+                        <button id="clear-history-button"
+                                class="history-clear"
+                                type="button"
+                                hidden>
+                            Clear records
+                        </button>
+                    </details>
+
+                    <div class="result-footer">
+                        <span>✦</span>
+                        Powered by Extra Trees Regression
+                    </div>
+                </aside>
+            </div>
+
+            <p class="disclaimer">
+                <strong>Note:</strong> The predicted price is an estimate,
+                not a guaranteed selling price. Vehicle condition,
+                location and market demand may affect the actual value.
+            </p>
+        </section>
+
+        <section class="analysis-section" id="analysis">
+            <div class="section-heading">
+                <span class="eyebrow">DATASET & MODEL ANALYSIS</span>
+                <h2>See What the Data Says</h2>
+                <p id="analysis-summary">Loading saved evaluation and dataset statistics...</p>
+            </div>
+
+            <div id="analysis-error" class="message error" role="alert" hidden></div>
+
+            <div id="analysis-content" hidden>
+                <div class="analysis-metrics">
+                    <article class="analysis-metric">
+                        <span>VALID PRICED CARS</span>
+                        <strong id="analysis-rows">—</strong>
+                        <small>after cleaning invalid listings</small>
+                    </article>
+                    <article class="analysis-metric">
+                        <span>BASELINE IMPROVEMENT</span>
+                        <strong id="analysis-score">—</strong>
+                        <div class="score-track" role="progressbar"
+                             aria-label="Relative improvement score"
+                             aria-valuemin="0" aria-valuemax="100"
+                             aria-valuenow="0">
+                            <span id="analysis-score-bar"></span>
+                        </div>
+                        <small>0-100 relative error reduction, not accuracy</small>
+                    </article>
+                    <article class="analysis-metric">
+                        <span>HOLDOUT MAE</span>
+                        <strong id="analysis-mae">—</strong>
+                        <small>average absolute price error</small>
+                    </article>
+                    <article class="analysis-metric">
+                        <span>MEDIAN PERCENT ERROR</span>
+                        <strong id="analysis-mape">—</strong>
+                        <small>median error relative to actual price</small>
+                    </article>
+                </div>
+
+                <div class="chart-grid">
+                    <article class="chart-card">
+                        <div class="chart-title">
+                            <div>
+                                <h3>Listings by Manufacturer</h3>
+                                <p>Share of cleaned dataset records</p>
+                            </div>
+                            <span class="chart-type">PIE</span>
+                        </div>
+                        <div class="pie-layout">
+                            <div id="company-pie" class="pie-chart"
+                                 role="img" aria-label="Manufacturer share pie chart"></div>
+                            <div id="company-legend" class="chart-legend"></div>
+                        </div>
+                    </article>
+
+                    <article class="chart-card">
+                        <div class="chart-title">
+                            <div>
+                                <h3>Car Price Distribution</h3>
+                                <p>Number of cleaned listings in each INR band</p>
+                            </div>
+                            <span class="chart-type">BAR</span>
+                        </div>
+                        <div id="price-bars" class="bar-chart"
+                             role="img" aria-label="Listing counts by price range"></div>
+                    </article>
+                </div>
+
+                <details class="settings-details">
+                    <summary>Saved model training settings</summary>
+                    <dl id="training-settings" class="settings-list"></dl>
+                    <a class="report-link" href="/api/analytics/report">
+                        Download the complete JSON evaluation record
+                    </a>
+                </details>
+
+                <p class="analysis-note">
+                    This is a regression model, so it does not have a literal
+                    “percent correct” accuracy. The 0-100 score is calculated
+                    as the percentage reduction in holdout mean absolute error
+                    compared with predicting the training-set median price.
+                    Holdout rows with identical vehicle features are kept
+                    together to reduce duplicate-listing leakage.
+                </p>
+            </div>
+        </section>
+
+        <section class="how-section" id="how-it-works">
+            <div class="section-heading">
+                <span class="eyebrow">HOW IT WORKS</span>
+                <h2>Three Steps. One Smart Estimate.</h2>
+                <p>A simple interface connected to your trained ML model.</p>
+            </div>
+
+            <div class="feature-grid">
+                <article class="feature-card">
+                    <span class="feature-number">01</span>
+                    <h3>Enter Car Details</h3>
+                    <p>
+                        Select the car model, manufacturer, year,
+                        fuel type and kilometres driven.
+                    </p>
+                </article>
+
+                <article class="feature-card featured">
+                    <span class="feature-number">02</span>
+                    <h3>Machine Learning</h3>
+                    <p>
+                        Extra Trees Regression learns price patterns from
+                        car model, year, mileage, manufacturer and fuel.
+                    </p>
+                </article>
+
+                <article class="feature-card">
+                    <span class="feature-number">03</span>
+                    <h3>Get Your Estimate</h3>
+                    <p>
+                        View the predicted price and an indicative
+                        range in Indian rupees.
+                    </p>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <a class="logo" href="#home">
+            <span class="logo-icon">A</span>
+            AutoValue<span class="logo-dot">.</span>
+        </a>
+
+        <p>Car Price Predictor · AI/ML Project</p>
+        <span>Built with Python, Flask and Scikit-learn</span>
+    </footer>
+
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
